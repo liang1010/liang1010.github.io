@@ -1,28 +1,45 @@
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
 
-import { AppRoutingModule } from './app-routing.module';
+import { AppRoutingModule } from './app.routing.module';
 import { AppComponent } from './app.component';
-import { HomeComponent } from './home/home.component';
-import { NavBarComponent } from './nav-bar/nav-bar.component';
-import { HttpClientModule } from '@angular/common/http';
-import { FooterComponent } from './footer/footer.component';
-import { InProgressComponent } from './in-progress/in-progress.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { PublicLayoutModule } from './layout/public-layout/public-layout.module';
+import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
+import { ConfigService } from './shared/services/config.service';
+import { SharedModule } from './shared/shared.module';
+import { HttpInterceptorService } from './shared/services/http-interceptor.service';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    HomeComponent,
-    NavBarComponent,
-    FooterComponent,
-    InProgressComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    BrowserAnimationsModule,
+    PublicLayoutModule,
+    HttpClientModule,
+    SharedModule,
   ],
-  providers: [],
+  providers: [{
+    provide: APP_INITIALIZER,
+    useFactory: AppModule.configProviderFactory,
+    deps: [ConfigService, HttpClient],
+    multi: true
+  },
+  {
+    provide: HTTP_INTERCEPTORS,
+    useClass: HttpInterceptorService,
+    multi: true,
+  },
+  ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  private static configProviderFactory<T>(provider: ConfigService, client: HttpClient) {
+    const f = () => provider.load(client);
+    return f;
+  }
+}
