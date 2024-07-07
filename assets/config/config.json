@@ -2,7 +2,7 @@
   "title": "Healing Touch",
   "header": "Welcome",
   "footer": "Copyright © 2019 - 2023 HongLiang®. All rights reserved.",
-  "apiUrl": "http://localhost:5051/api",
+  "apiUrl": "https://htapiinprogress.somee.com/api",
   "auth": {
     "api": "authenticate",
     "login": "login",
